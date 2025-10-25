@@ -8,100 +8,97 @@ const Book = require('./models/Book');
 const User = require('./models/User');
 const Order = require('./models/Order');
 
-const MONGO = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/bookstore';
+let MONGODB = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/bookstore';
+// Prefer IPv4 loopback to avoid environments where 'localhost' resolves to IPv6 ::1
+if (MONGODB.includes('localhost')) {
+	MONGODB = MONGODB.replace('localhost', '127.0.0.1');
+}
 
 async function seed() {
-  try {
-    await mongoose.connect(MONGO, { useNewUrlParser: true, useUnifiedTopology: true });
-    console.log('Connected to MongoDB for seeding');
+	try {
+		await mongoose.connect(MONGODB, { useNewUrlParser: true, useUnifiedTopology: true });
+		console.log('Connected to MongoDB for seeding');
 
-    // Clear existing data
-    await Order.deleteMany({});
-    await Book.deleteMany({});
-    await User.deleteMany({});
+		// Clear existing
+		await Book.deleteMany({});
+		await User.deleteMany({});
+		await Order.deleteMany({});
 
-    // Create a sample user
-    const password = await bcrypt.hash('password123', 10);
-    const user = await User.create({
-      username: 'demo',
-      email: 'demo@bookstore.test',
-      password,
-    });
+		// Create users
+		const password = await bcrypt.hash('password123', 10);
+		const user = await User.create({ username: 'demo', email: 'demo@bookstore.com', password });
 
-    // Sample books
-    const books = [
-      {
-        title: 'The Little Prince',
-        author: 'Antoine de Saint-Exupéry',
-        description: 'A poetic tale of loneliness, friendship, love, and loss.',
-        genre: 'Fiction',
-        price: 9.99,
-        coverImage: 'https://picsum.photos/seed/prince/400/600',
-        isbn: '9780156012195',
-        stock: 12,
-        reviews: [
-          { user: user._id, rating: 5, comment: 'A timeless classic.' }
-        ]
-      },
-      {
-        title: 'Atomic Habits',
-        author: 'James Clear',
-        description: 'An easy & proven way to build good habits & break bad ones.',
-        genre: 'Self-help',
-        price: 14.99,
-        coverImage: 'https://picsum.photos/seed/atomic/400/600',
-        isbn: '9780735211292',
-        stock: 20,
-        reviews: []
-      },
-      {
-        title: 'The Pragmatic Programmer',
-        author: 'Andrew Hunt & David Thomas',
-        description: 'Classic book about software engineering best practices.',
-        genre: 'Technology',
-        price: 29.99,
-        coverImage: 'https://picsum.photos/seed/pragmatic/400/600',
-        isbn: '9780201616224',
-        stock: 8,
-        reviews: []
-      },
-      {
-        title: 'Dune',
-        author: 'Frank Herbert',
-        description: 'Epic science fiction novel of politics, religion and ecology.',
-        genre: 'Science Fiction',
-        price: 12.5,
-        coverImage: 'https://picsum.photos/seed/dune/400/600',
-        isbn: '9780441013593',
-        stock: 15,
-        reviews: []
-      }
-    ];
+		// Sample books
+		const books = [
+			{
+				title: 'The Nature of Code',
+				author: 'Daniel Shiffman',
+				description: 'A gentle introduction to programming simulations of natural systems.',
+				genre: 'Technology',
+				price: 29.99,
+				coverImage: 'https://via.placeholder.com/300x450?text=Nature+of+Code',
+				isbn: '978-0985930808',
+				stock: 12,
+				reviews: []
+			},
+			{
+				title: 'The Little Prince',
+				author: 'Antoine de Saint-Exupéry',
+				description: 'A poetic tale about loneliness, friendship, love, and loss.',
+				genre: 'Fiction',
+				price: 9.99,
+				coverImage: 'https://via.placeholder.com/300x450?text=The+Little+Prince',
+				isbn: '978-0156012195',
+				stock: 30,
+				reviews: []
+			},
+			{
+				title: 'Clean Code',
+				author: 'Robert C. Martin',
+				description: 'A handbook of agile software craftsmanship.',
+				genre: 'Technology',
+				price: 34.99,
+				coverImage: 'https://via.placeholder.com/300x450?text=Clean+Code',
+				isbn: '978-0132350884',
+				stock: 7,
+				reviews: []
+			},
+			{
+				title: 'Sapiens: A Brief History of Humankind',
+				author: 'Yuval Noah Harari',
+				description: 'Explores the development of humankind and how biology and history defined us.',
+				genre: 'History',
+				price: 19.99,
+				coverImage: 'https://via.placeholder.com/300x450?text=Sapiens',
+				isbn: '978-0062316097',
+				stock: 15,
+				reviews: []
+			}
+		];
 
-    const createdBooks = await Book.insertMany(books);
+		const createdBooks = await Book.insertMany(books);
+		console.log(`Inserted ${createdBooks.length} books`);
 
-    // Create a sample order
-    const order = await Order.create({
-      user: user._id,
-      items: [
-        { book: createdBooks[0]._id, quantity: 1, price: createdBooks[0].price }
-      ],
-      totalAmount: createdBooks[0].price,
-      status: 'confirmed'
-    });
+		// Create an order for demo user
+		const order = await Order.create({
+			user: user._id,
+			items: [
+				{ book: createdBooks[0]._id, quantity: 1, price: createdBooks[0].price },
+				{ book: createdBooks[1]._id, quantity: 2, price: createdBooks[1].price }
+			],
+			totalAmount: createdBooks[0].price + createdBooks[1].price * 2,
+			status: 'confirmed'
+		});
 
-    console.log('Seed complete:');
-    console.log(' Users:', 1);
-    console.log(' Books:', createdBooks.length);
-    console.log(' Orders:', 1);
+		console.log('Created demo user and order');
 
-    await mongoose.disconnect();
-    console.log('Disconnected from MongoDB');
-    process.exit(0);
-  } catch (err) {
-    console.error('Seeding error:', err);
-    process.exit(1);
-  }
+		await mongoose.disconnect();
+		console.log('Database seed complete');
+		process.exit(0);
+	} catch (err) {
+		console.error('Seeding failed', err);
+		process.exit(1);
+	}
 }
 
 seed();
