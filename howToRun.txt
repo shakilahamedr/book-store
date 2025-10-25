@@ -1,0 +1,3 @@
+use below command in vscode powershell terminal inside client folder to run the frontend without eslint features. otherwise it is throwing esling error
+
+ npm run start -- --no-eslint
