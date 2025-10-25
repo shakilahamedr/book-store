@@ -1,0 +1,7 @@
+* text=auto
+*.md text
+*.js text
+*.ts text
+*.json text
+*.css text
+*.html text

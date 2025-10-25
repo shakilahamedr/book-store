@@ -54,11 +54,11 @@ npm install
 ```
 
 3. Set up environment variables:
-   Create a `.env` file in the server directory with the following content:
+   Create a `.env` file in the `server` directory (you can copy `.env.example`) with the following content:
 
 ```
 PORT=5000
-MONGODB_URI=mongodb://localhost:27017/bookstore
+MONGODB_URI=mongodb://127.0.0.1:27017/bookstore
 JWT_SECRET=your-secret-key
 ```
 
@@ -137,3 +137,31 @@ book-store/
 ## License
 
 This project is licensed under the MIT License.
+
+## Professionalization & Git hygiene
+
+I added repository hygiene and CI helpers to make the project ready for a professional workflow. Please follow these steps to clean up the repo if `node_modules` or other files were previously committed.
+
+1. Add the new `.gitignore` and stop tracking generated files (run from project root):
+
+```powershell
+git rm -r --cached node_modules
+git rm -r --cached client/node_modules
+git rm -r --cached server/node_modules
+git add .
+git commit -m "chore: remove node_modules from repository and add .gitignore"
+git push
+```
+
+2. Use the provided `.env.example` files in `server/` and `client/` as templates; never commit your real `.env`.
+
+3. Continuous Integration: a basic GitHub Actions workflow `.github/workflows/ci.yml` is included to install dependencies and build the frontend on push/PR to `main`.
+
+4. Formatting & linting: `.prettierrc`, `.eslintrc.json`, and `.editorconfig` were added to help standardize code style across contributors.
+
+5. License: MIT license added to the repository.
+
+If you'd like I can also:
+
+- Remove `node_modules` from the git history (more invasive) using `git filter-repo` or `git filter-branch` and push the cleaned history.
+- Add prettier/eslint pre-commit hooks via `husky` + `lint-staged`.
