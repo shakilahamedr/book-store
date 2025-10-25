@@ -11,6 +11,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
       - name: Use Node.js 18.x
         uses: actions/setup-node@v4
         with:
@@ -20,8 +21,13 @@ jobs:
         working-directory: ./client
         run: npm ci
 
+      - name: Configure Git identity
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
       - name: Deploy to GitHub Pages
         working-directory: ./client
-        run: npm run deploy
         env:
           CI: false
+        run: npm run deploy
