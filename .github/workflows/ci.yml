@@ -30,6 +30,7 @@ jobs:
 
       - name: Build client
         working-directory: ./client
+        # Override the CI environment variable to treat warnings as normal and not as errors
         run: CI=false npm run build --if-present
 
       - name: Run server lint (no-op if not configured)
