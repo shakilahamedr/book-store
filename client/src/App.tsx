@@ -12,7 +12,7 @@ import Contact from './pages/Contact';
 
 const router = createBrowserRouter([
   {
-    path: '/book-store/',
+    path: '/',
     element: <Layout />,
     children: [
       { index: true, element: <Home /> },
