@@ -25,9 +25,13 @@ jobs:
 
       - name: Install client dependencies
         working-directory: ./client
+        run: npm ci
+
+      - name: Add Environment Variables
+        working-directory: ./client
         env:
           REACT_APP_API_URL: ${{ vars.REACT_APP_API_URL }}
-        run: npm ci
+        run: npm run build
 
       - name: Configure Git identity
         run: |
