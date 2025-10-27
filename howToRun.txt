@@ -1,3 +1,24 @@
-use below command in vscode powershell terminal inside client folder to run the frontend without eslint features. otherwise it is throwing esling error
+##use below command in vscode powershell terminal inside client folder to run the frontend without eslint features. otherwise it is throwing esling error
 
- npm run start -- --no-eslint
+npm run start -- --no-eslint
+
+---------
+##how to build and run backend server folder locally as docker container
+
+//to build a docker container
+docker build -t book-store-backend  ./server   
+
+//to run method 1(giving env variables in a .env file):
+docker run -p 5000:5000 --env-file ./server/.env book-store-backend
+
+//to run method 2(to explicitly mention env variables in docker run command):
+docker run -p 5000:5000 \
+-e MONGODB_URI="your_mongodb_connection_string" \
+-e PORT=5000 \
+-e JWT_SECRET="your_secret_key" \
+-e ANOTHER_VAR="some_value" \
+book-store-backend
+
+--------
+
+
