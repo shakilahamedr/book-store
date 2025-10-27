@@ -1,24 +1,15 @@
 const mongoose = require('mongoose');
-const dotenv = require('dotenv');
 const bcrypt = require('bcryptjs');
 
-dotenv.config();
-
+const connectDB = require('./db.js');
 const Book = require('./models/Book');
 const User = require('./models/User');
 const Order = require('./models/Order');
 
-let MONGODB = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/bookstore';
-// Prefer IPv4 loopback to avoid environments where 'localhost' resolves to IPv6 ::1
-if (MONGODB.includes('localhost') || MONGODB.includes('127.0.0.1')) {
-	console.log('using localhost 127.0.0.1:27017 for mongodb connection');
-	MONGODB = MONGODB.replace('localhost', '127.0.0.1');
-}
-
 async function seed() {
 	try {
-		await mongoose.connect(MONGODB, { useNewUrlParser: true, useUnifiedTopology: true });
-		console.log('Connected to MongoDB for seeding');
+		connectDB();
+		console.log('MongoDB seeding start');
 
 		// Clear existing
 		await Book.deleteMany({});

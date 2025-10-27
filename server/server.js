@@ -1,28 +1,21 @@
 const express = require('express');
 const cors = require('cors');
-const mongoose = require('mongoose');
+const connectDB = require('./db.js');
 const dotenv = require('dotenv');
 
-dotenv.config();
-
 const app = express();
+
+// Use dotenv only in a local development environment.
+if (process.env.NODE_ENV !== 'production') {
+  dotenv.config();
+}
 
 // Middleware
 app.use(cors());
 app.use(express.json());
 
-// Database connection
-let MONGODB = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/bookstore';
-if (MONGODB.includes('localhost') || MONGODB.includes('127.0.0.1')) {
-  console.log('using localhost 127.0.0.1:27017 for mongodb connection');
-  MONGODB = MONGODB.replace('localhost', '127.0.0.1');
-}
-mongoose.connect(MONGODB, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-})
-  .then(() => console.log('Connected to MongoDB'))
-  .catch(err => console.error('Could not connect to MongoDB:', err));
+// Connect to the database
+connectDB();
 
 // Routes (will be imported from routes folder)
 app.use('/api/auth', require('./routes/auth'));
