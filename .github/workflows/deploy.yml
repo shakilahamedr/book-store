@@ -30,6 +30,7 @@ jobs:
       - name: Add Environment Variables
         working-directory: ./client
         env:
+          CI: false
           REACT_APP_API_URL: ${{ vars.REACT_APP_API_URL }}
         run: npm run build
 
