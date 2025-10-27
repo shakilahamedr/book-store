@@ -25,6 +25,8 @@ jobs:
 
       - name: Install client dependencies
         working-directory: ./client
+        env:
+          REACT_APP_API_URL: ${{ vars.REACT_APP_API_URL }}
         run: npm ci
 
       - name: Configure Git identity
