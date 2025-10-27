@@ -10,7 +10,8 @@ const Order = require('./models/Order');
 
 let MONGODB = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/bookstore';
 // Prefer IPv4 loopback to avoid environments where 'localhost' resolves to IPv6 ::1
-if (MONGODB.includes('localhost')) {
+if (MONGODB.includes('localhost') || MONGODB.includes('127.0.0.1')) {
+	console.log('using localhost 127.0.0.1:27017 for mongodb connection');
 	MONGODB = MONGODB.replace('localhost', '127.0.0.1');
 }
 

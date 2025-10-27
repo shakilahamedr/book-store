@@ -12,7 +12,12 @@ app.use(cors());
 app.use(express.json());
 
 // Database connection
-mongoose.connect('mongodb://127.0.0.1:27017/bookstore', {
+let MONGODB = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/bookstore';
+if (MONGODB.includes('localhost') || MONGODB.includes('127.0.0.1')) {
+  console.log('using localhost 127.0.0.1:27017 for mongodb connection');
+  MONGODB = MONGODB.replace('localhost', '127.0.0.1');
+}
+mongoose.connect(MONGODB, {
   useNewUrlParser: true,
   useUnifiedTopology: true
 })
