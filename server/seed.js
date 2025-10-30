@@ -8,8 +8,8 @@ const Order = require('./models/Order');
 
 async function seed() {
 	try {
-		connectDB();
-		console.log('MongoDB seeding start');
+		await connectDB();
+		console.log('MongoDB seeding starts');
 
 		// Clear existing
 		await Book.deleteMany({});
